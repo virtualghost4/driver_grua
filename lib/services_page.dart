@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
+import 'package:driver_grua/detalle_cliente.dart';
+
 
 class ServicePage extends StatefulWidget {
 
@@ -19,6 +21,8 @@ class _ServicePageState extends State<ServicePage> {
 
     print('dentro de servicios');
     String token = await readCounter();
+   
+    
     print('token: $token');
     http.Response res = await http.get(
       'http://tesis-ubb-2018-01.us-east-1.elasticbeanstalk.com/api/servicios',
@@ -75,27 +79,57 @@ class _ServicePageState extends State<ServicePage> {
         onPressed: () {},
       );
 
-      return Scaffold (
-        backgroundColor: Colors.white,
-        body: Center(
-          child: ListView(
-            children: <Widget>[
-              new ListView.builder(
-                itemCount: data == null ? 0 : data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return new Expanded(
-                    child: new Row(
-                      children: <Widget>[
-                        someText,
-                      ],
+      return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Servicios Pendientes"),
+      ),
+      body: new ListView.builder(
+        itemCount: data == null ? 0 : data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Card(
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text('id servicio:'),
+                    new Text('Cliente:'),
+                    new Text('Patente Vehiculo:'),
+                    new Text('telefono:'),
+                  ]
+                ),
+                new Column(
+                  children: <Widget>[
+                    new Text(data[index]["id"].toString()),
+                    new Text(data[index]["cliente_info"]["nombre"].toString()),
+                    new Text(data[index]["vehiculo_info"]["patente_vehiculo"].toString()),
+                    new Text(data[index]["cliente_info"]["celular"].toString()),
+                  ],
+                ),
+                new Column(
+                  
+                  children: <Widget>[
+                     new FlatButton(
+                       color: Colors.redAccent,
+                      child: new Text('Tomar'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Detalle(data[index])),
+                        );
+                        //print(data[index]["id"]);
+                      },
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      );
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+);
       
       
     }

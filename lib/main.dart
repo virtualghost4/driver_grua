@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
-import 'maps_demo.dart';
 import 'package:driver_grua/services_page.dart';
 
-
 void main() => runApp(MyApp());
+
+
 
 class MyApp extends StatelessWidget {
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
       '/': (context) => LoginPage(),
-      '/second': (context) => PlaceMarkerPage(),
+      
       '/third': (context) => ServicePage(),
       },
     );

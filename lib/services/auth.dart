@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-
 class Auth {
 
 
@@ -32,6 +31,9 @@ Map  data = new Map();
     print(res.statusCode.toString());
     if(res.statusCode==200){
       writeCounter(data["access_token"]);
+      //token = data["access_token"];
+      
+
       return 200;
     }else{
       return 401;

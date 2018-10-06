@@ -6,25 +6,28 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'page.dart';
+import 'package:driver_grua/services_page.dart';
 
 class PlaceMarkerPage extends Page {
-  PlaceMarkerPage() : super(const Icon(Icons.place), 'Place marker');
+
+  PlaceMarkerPage() : super(const Icon(Icons.location_on), 'Place marker');
 
   @override
   Widget build(BuildContext context) {
-    return const PlaceMarkerBody();
+    return  PlaceMarkerBody();
   }
 }
 
 class PlaceMarkerBody extends StatefulWidget {
-  const PlaceMarkerBody();
+  PlaceMarkerBody();
 
   @override
   State<StatefulWidget> createState() => PlaceMarkerBodyState();
 }
 
 class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
-  static final LatLng center = const LatLng(-36.8189, -73.0503);
+  
+  LatLng center = LatLng(-36.8189, -73.0503);
 
   PlaceMarkerBodyState();
 
@@ -73,14 +76,14 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
   void _add() {
     controller.addMarker(MarkerOptions(
       position: LatLng(-36.8189, -73.0503),
-      infoWindowText: InfoWindowText('Grúa #${_markerCount + 1}', 'Transportes Telleo'),
+      infoWindowText: InfoWindowText('Grúa ', 'Transportes Telleo'),
     ));
     setState(() {
       _markerCount += 1;
     });
   }
 
-  void _remove() {
+ /* void _remove() {
     controller.removeMarker(_selectedMarker);
     setState(() {
       _selectedMarker = null;
@@ -162,7 +165,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
       MarkerOptions(zIndex: current == 12.0 ? 0.0 : current + 1.0),
     );
   }
-
+*/
   @override
   Widget build(BuildContext context) {
      return Scaffold(

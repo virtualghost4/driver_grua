@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     final email = TextFormField(
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
+      //initialValue: "piloto@tesis.test",
       autofocus: false,
       decoration: InputDecoration(
         hintText: 'Email',
@@ -43,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       controller: passwordController,
       autofocus: false,
       obscureText: true,
+     // initialValue: "123456",
       decoration: InputDecoration(
         hintText: 'Password',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -103,9 +105,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<int> performLogin() async{
     String email = emailController.text;
     String password = passwordController.text;
-    print('login attempt: $email with $password');
     var res = await Auth().getData(email, password);
-    print('res $res');
     if(res == 200){
       Navigator.of(context).pushNamed('/third');
     }else{

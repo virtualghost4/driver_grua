@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-import 'package:driver_grua/services/auth.dart';
 import 'package:path_provider/path_provider.dart';
 
 
