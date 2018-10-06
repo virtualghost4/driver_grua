@@ -2,14 +2,11 @@ import 'package:driver_grua/services_page.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_grua/maps_demo.dart';
 
+
 class Detalle extends StatefulWidget {
 
   final Map data;
   Detalle(this.data);
-
-  void showMe(){
-    print('this data rocks!: $data');
-  }
 
   _DetalleState createState() => _DetalleState();
 }
@@ -49,7 +46,3 @@ class _DetalleState extends State<Detalle> {
     );
   }
 }
-
-
-
-  
