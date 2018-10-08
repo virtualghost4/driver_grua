@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:driver_grua/services/take.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class Detalle extends StatefulWidget {
@@ -20,6 +22,7 @@ class Detalle extends StatefulWidget {
 class _DetalleState extends State<Detalle> {
 
 final valorController = TextEditingController();
+final mensajeController = TextEditingController();
 
   GoogleMapController mapController;
   //Marker _selectedMarker;
@@ -83,12 +86,65 @@ final valorController = TextEditingController();
 
   Future<String> showValor() async {
     String value = valorController.text;
-    if(value!=' '){
+    if(value==''){
       print('Valor Vacio');
     }else{
       print('valor ingresado es: $value');
     }
-    return 'Success';
+    return value;
+  }
+
+  Future<String> showDescripcion() async {
+    String descripcion = mensajeController.text;
+    if(descripcion==''){
+      print('Descripcion Vacia');
+    }else{
+      print('Descripcion ingresada: $descripcion');
+    }
+    return descripcion;
+  }
+
+  Future  performPrecio() async{
+
+    String idUser = await showID();
+    String precio = await showValor();
+    String idServicio = widget.data["id"].toString();
+    String idGrua = widget.data["id_grua"].toString();
+
+    Map res = await Take().take(idUser, precio, idServicio, idGrua);
+    
+  }
+
+  Future performDescripcion(int isAltaGama) async{
+    String descripcion = await showDescripcion();
+    String idService = widget.data["id"].toString();
+    String altaGama = isAltaGama.toString();
+    print('Descripcion es: $descripcion');
+    await Take().updateDescripcion(altaGama, descripcion, idService);
+
+  }
+
+  void errorToast() {
+    Fluttertoast.showToast(
+        msg: "Error al tomar Servicio",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIos: 1
+    );
+  }
+  void successfulToast() {
+    Fluttertoast.showToast(
+        msg: "Servicio Reclamado",
+        toastLength: Toast.LENGTH_SHORT,
+        timeInSecForIos: 1
+    );
+  }
+
+  bool _value = false;
+
+  void _onChanged(bool value){
+    setState(() {
+          _value = value;
+        });
   }
 
   @override
@@ -202,10 +258,11 @@ final valorController = TextEditingController();
               new Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    new FlatButton(
+                    new RaisedButton(
                       child: new Text('Send'),
                       onPressed: (){
-                        showValor();
+                        performPrecio();
+                        
                         
                       },
                     ),
@@ -225,11 +282,33 @@ final valorController = TextEditingController();
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 new TextField(
-                     decoration: InputDecoration(
-                       hintText: 'Value',
+                    controller: mensajeController,
+                    decoration: InputDecoration(
+                       hintText: 'Ingrese Descripcion',
                      ),
                    ),
-                  new FlatButton(
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      new Text('¿Es alta Gama?'),
+                      new Switch(
+                        value: _value , onChanged: (bool value){_onChanged(value);},
+                      ),
+                      new RaisedButton(
+                        child: 
+                        new Text('Enviar Descripcion'),
+                        onPressed: (){
+                          
+                          if(_value){
+                            performDescripcion(1);
+                          }else{
+                            performDescripcion(0);
+                          }
+                        },
+                      )
+                    ],
+                  ),
+                  new RaisedButton(
                     child: 
                       new Text('abrir mapa'),
                       onPressed: (){
