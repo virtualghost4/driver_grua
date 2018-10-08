@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'page.dart';
-import 'package:driver_grua/services_page.dart';
+//import 'package:driver_grua/services_page.dart';
 
 class PlaceMarkerPage extends Page {
 
@@ -32,7 +32,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
   PlaceMarkerBodyState();
 
   GoogleMapController controller;
-  int _markerCount = 0;
+  //int _markerCount = 0;
   Marker _selectedMarker;
 
   
@@ -42,6 +42,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
     controller.onMarkerTapped.add(_onMarkerTapped);
     this._add();
   }
+  
   
 
   @override
@@ -79,7 +80,7 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
       infoWindowText: InfoWindowText('Grúa ', 'Transportes Telleo'),
     ));
     setState(() {
-      _markerCount += 1;
+     // _markerCount += 1;
     });
   }
 
@@ -179,12 +180,12 @@ class PlaceMarkerBodyState extends State<PlaceMarkerBody> {
               child:
                 GoogleMap(
                   onMapCreated: _onMapCreated,
-                  options: GoogleMapOptions(
-                    cameraPosition: const CameraPosition(
-                      target: LatLng(-36.8189, -73.0503),
-                      zoom: 11.0,
+                    options: GoogleMapOptions(
+                      cameraPosition: const CameraPosition(
+                        target: LatLng(-36.8189, -73.0503),
+                        zoom: 11.0,
+                      )
                     )
-                  )
               ),
             )
           ]

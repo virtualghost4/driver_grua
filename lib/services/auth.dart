@@ -31,7 +31,7 @@ Map  data = new Map();
     print(res.statusCode.toString());
     if(res.statusCode==200){
       writeCounter(data["access_token"]);
-      //token = data["access_token"];
+      writeId(data["user"]["id"].toString());
       
 
       return 200;
@@ -47,11 +47,24 @@ Map  data = new Map();
     return directory.path;
   }
 
+  Future<String> get _localPathId async {
+    final directory = await getApplicationDocumentsDirectory();
+    print(directory);
+    return directory.path;
+  }
+
+//crea archivo con token
   Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/counter.txt');
   }
+  //crea archivo con id
+  Future<File> get _idFile async {
+    final path = await _localPathId;
+    return File('$path/id.txt');
+  }
 
+//escribe archivo con token
   Future<File> writeCounter(String token) async {
     final file = await _localFile;
   
@@ -59,6 +72,15 @@ Map  data = new Map();
     return file.writeAsString('$token');
   }
 
+//escribe archivo con id
+  Future<File> writeId(String id) async {
+    final file = await _idFile;
+  
+    // Write the file
+    return file.writeAsString('$id');
+  }
+
+//lee archivo con id
   Future<String> readCounter() async {
     try {
       final file = await _localFile;
@@ -69,6 +91,20 @@ Map  data = new Map();
     } catch (e) {
       // If we encounter an error, return 0
       return 'no';
+    }
+  }
+
+//lee archivo con id
+  Future<String> readId() async {
+    try {
+      final file = await _idFile;
+
+      // Read the file
+      String contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      // If we encounter an error, return 0
+      return 'no se detecta id';
     }
   }
 
