@@ -36,21 +36,16 @@ List listadoGruas = ['Elija grua'];
 List<DropdownMenuItem<String>> _dropDownMenuItems;
   String _currentGrua;
 
-  /*@override
+  @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _currentGrua = _dropDownMenuItems[0].value;
     super.initState();
-}*/
+}
 
   Future getFutureList() async{
     await getGruas();
     
-    void initState() {
-    _dropDownMenuItems = getDropDownMenuItems();
-    _currentGrua = _dropDownMenuItems[0].value;
-    super.initState();
-}
   }
 
 List<DropdownMenuItem<String>> getDropDownMenuItems() {
@@ -232,7 +227,10 @@ List<DropdownMenuItem<String>> getDropDownMenuItems() {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return FutureBuilder(
+      future: getGruas(),
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+      return Scaffold(
       backgroundColor:Colors.white,
       appBar: new AppBar(
         title: new Text("Detalle Cliente"),
@@ -496,6 +494,8 @@ List<DropdownMenuItem<String>> getDropDownMenuItems() {
           ),
         ],
       )
+    );
+      },
     );
   }
 
