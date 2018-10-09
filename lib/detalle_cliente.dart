@@ -10,10 +10,12 @@ import 'package:driver_grua/services/take.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 
+
 class Detalle extends StatefulWidget {
 
   Detalle({Key key,@required this.data}) : super(key : key);
   final Map data;
+  
 
   @override
   _DetalleState createState() => _DetalleState();
@@ -24,6 +26,61 @@ class _DetalleState extends State<Detalle> {
 final valorController = TextEditingController();
 final mensajeController = TextEditingController();
 
+String destination;
+String source;
+List<String> splitedDest = new List();
+List<String> splitedSource = new List();
+
+List listadoGruas = ['Elija grua'];
+
+List<DropdownMenuItem<String>> _dropDownMenuItems;
+  String _currentGrua;
+
+  /*@override
+  void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentGrua = _dropDownMenuItems[0].value;
+    super.initState();
+}*/
+
+  Future getFutureList() async{
+    await getGruas();
+    
+    void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentGrua = _dropDownMenuItems[0].value;
+    super.initState();
+}
+  }
+
+List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = new List();
+    for (String grua in listadoGruas) {
+      items.add(new DropdownMenuItem(
+          value: grua,
+          child: new Text(grua)
+      ));
+    }
+    return items;
+}
+
+
+
+
+ void splitDest(){
+  destination = widget.data["destino"].toString();
+  splitedDest = destination.split(" ");
+  print(splitedDest[0]);
+  print(splitedDest[1]);
+ }
+ 
+ void splitSource(){
+  source = widget.data["ubicacion"].toString();
+  splitedSource = source.split(" ");
+  print(splitedDest[0]);
+  print(splitedDest[1]);
+ }
+
   GoogleMapController mapController;
   //Marker _selectedMarker;
 
@@ -31,17 +88,25 @@ final mensajeController = TextEditingController();
     print(widget.data);
   }
 
-  void _costumerLocation() {
+  void _costumerDestination() {
+    destination = widget.data["destino"].toString();
+    splitedDest = destination.split(" ");
+    print(splitedDest[0]);
+    print(splitedDest[1]);
     mapController.addMarker(MarkerOptions(
-      position: LatLng(-36.8189, -73.0503),
-      infoWindowText: InfoWindowText('Origen', 'Transportes Telleo'),
+      position: LatLng(double.parse(splitedDest[0]),double.parse(splitedDest[1])),
+      infoWindowText: InfoWindowText('Destino', 'Transportes Telleo'),
     ));
   }
 
-  void _costumerDestination() {
+  void _costumerLocation() {
+    source = widget.data["ubicacion"].toString();
+    splitedSource = source.split(" ");
+    print(splitedSource[0]);
+    print(splitedSource[1]);
     mapController.addMarker(MarkerOptions(
-      position: LatLng(-36.8080, -73.0504),
-      infoWindowText: InfoWindowText('Destino', 'Transportes Telleo'),
+      position: LatLng(double.parse(splitedSource[0]), double.parse(splitedSource[1])),
+      infoWindowText: InfoWindowText('Origen', 'Transportes Telleo'),
     ));
   }
 
@@ -109,7 +174,7 @@ final mensajeController = TextEditingController();
     String idUser = await showID();
     String precio = await showValor();
     String idServicio = widget.data["id"].toString();
-    String idGrua = widget.data["id_grua"].toString();
+    String idGrua = listadoGruas[0]["id"].toString();
 
     Map res = await Take().take(idUser, precio, idServicio, idGrua);
     
@@ -121,7 +186,24 @@ final mensajeController = TextEditingController();
     String altaGama = isAltaGama.toString();
     print('Descripcion es: $descripcion');
     await Take().updateDescripcion(altaGama, descripcion, idService);
+  }
 
+  
+  Future getGruas() async{
+    listadoGruas = await Take().obtenerGruas();
+    print('listado Gruas : $listadoGruas');
+  }  
+
+
+
+
+  void showGruaID(){
+    print(listadoGruas);
+  }
+
+  Future performFinalizar() async{
+    String idServicio = widget.data["id"].toString();
+    await Take().finalizar(idServicio);
   }
 
   void errorToast() {
@@ -149,6 +231,7 @@ final mensajeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor:Colors.white,
       appBar: new AppBar(
@@ -274,7 +357,35 @@ final mensajeController = TextEditingController();
             )
           ),
           new Card(
-            
+            child: new Column(
+              children: <Widget>[
+                new Text('Listado de Gruas'),
+                new FlatButton(
+                  child: new Text('buscar gruas'),
+                  onPressed: (){
+                    getGruas();
+                    getDropDownMenuItems();
+                  },
+                ),
+                new Center(
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Text("Elija Grua: "),
+                      new Container(
+                        padding: new EdgeInsets.all(16.0),
+                      ),
+                      new DropdownButton(
+                        value: _currentGrua,
+                        items: _dropDownMenuItems,
+                        onChanged: changedDropDownItem,
+                      )
+                    ],
+                  )
+                ),
+              ],
+            ),
           ),
           new Container(
             child: new Column(
@@ -309,6 +420,12 @@ final mensajeController = TextEditingController();
                     ],
                   ),
                   new RaisedButton(
+                    child: new Text('Finalizar Servicio'),
+                    onPressed: (){
+                      performFinalizar();
+                    },
+                  ),
+                  new RaisedButton(
                     child: 
                       new Text('abrir mapa'),
                       onPressed: (){
@@ -330,6 +447,29 @@ final mensajeController = TextEditingController();
                   onPressed: (){
                     print('button Pressed!');
                     showMe();
+                  },
+                ),
+                new FlatButton(
+                  child: new Text('show Grua id'),
+                  onPressed: (){
+                    showGruaID();
+                  }
+                  
+                ),
+                new FlatButton(
+                  child: new Text(
+                    'dest log'
+                  ),
+                  onPressed: (){
+                    splitDest();
+                  },
+                ),
+                new FlatButton(
+                  child: new Text(
+                    'Source log'
+                  ),
+                  onPressed: (){
+                    splitSource();
                   },
                 ),
                 new Column(
@@ -359,6 +499,11 @@ final mensajeController = TextEditingController();
     );
   }
 
+void changedDropDownItem(String selectedGrua) {
+    setState(() {
+      _currentGrua = selectedGrua;
+    });
+  }
 
-    
+  
 }

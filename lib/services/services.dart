@@ -20,7 +20,7 @@ Future<List> fetchServices() async {
     'http://tesis-ubb-2018-01.us-east-1.elasticbeanstalk.com/api/servicios',
     headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
   );
-   data = jsonDecode(res.body);
+  data = jsonDecode(res.body);
   print(data);
   return data;
 }

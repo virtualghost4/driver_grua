@@ -9,7 +9,7 @@ class Take{
   final String endpoint =  "http://tesis-ubb-2018-01.us-east-1.elasticbeanstalk.com/api/";
   Map  data = new Map();
   Map mensajeResponse = new Map();
-
+  Map finalizaResponse = new Map();
   Future<Map> take(String id, String precio, String idServicio, String idGrua) async{
     String token = await readCounter();
     print('dentro de take');
@@ -50,6 +50,36 @@ class Take{
     print(mensajeResponse.toString());
   }
 
+  Future<List> obtenerGruas() async{
+    List listadoGruas = new List();
+    String token = await readCounter();
+
+    http.Response response = await http.get(
+      Uri.encodeFull('http://tesis-ubb-2018-01.us-east-1.elasticbeanstalk.com/api/gruaspiloto'),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+    );
+
+    listadoGruas = await jsonDecode(response.body);
+    print('ListadoGruas: $listadoGruas');
+
+    return listadoGruas;
+  }
+
+  Future finalizar(String idServicio) async{
+    String token = await readCounter();
+    print('dentro de finalizar');
+    print('id del servicio: $idServicio');
+
+    http.Response response = await http.get(
+      Uri.encodeFull(endpoint+'servicios/'+idServicio+'/finalizar'),
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+      
+    );
+    finalizaResponse = await jsonDecode(response.body);
+    print(finalizaResponse.toString());
+
+  }
+
    Future<String> get _localPath async {
       final directory = await getApplicationDocumentsDirectory();
       print(directory);
@@ -61,6 +91,7 @@ class Take{
       return File('$path/counter.txt');
     }
 
+    
 
     Future<String> readCounter() async {
       try {
